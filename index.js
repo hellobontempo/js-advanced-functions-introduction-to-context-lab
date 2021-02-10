@@ -30,15 +30,13 @@ function createTimeOutEvent(record, timeStamp){
 }
 
 function hoursWorkedOnDate(record, date){
-    let inTime, outTime
-    record.timeInEvents.map(element => {
-        if (element.date === date){
-        return inTime = element.hour}})
-    record.timeOutEvents.map(element => {
-        if (element.date === date){
-        return outTime =  element.hour}})
-    let timeWorked = (outTime - inTime)/100
-    return timeWorked
+    let inDate = record.timeInEvents.find(element => {
+    return element.date === date})
+    
+   let outDate = record.timeOutEvents.find(element => {
+    return element.date === date})
+
+   return (outDate.hour - inDate.hour)/100
 }
 
 function wagesEarnedOnDate (record, date) {
@@ -47,19 +45,22 @@ function wagesEarnedOnDate (record, date) {
 
 function allWagesFor(record){
     let dates = record.timeInEvents.map(element => element.date)
-    let hours = dates.map(element => wagesEarnedOnDate(record, element))
-    let wages = hours.reduce(function(total, currentHours) {
-        return total + currentHours})
-    return wages
+    return dates.reduce(function(total, d) {
+    return total + wagesEarnedOnDate(record, d)}, 0)
+
+    // let hours = dates.map(element => wagesEarnedOnDate(record, element))
+    // let wages = hours.reduce(function(total, currentHours) {
+    //     return total + currentHours})
+    // return wages
 }
 
 function calculatePayroll(records){
-    let totalWages = records.map(record => {
-        return allWagesFor(record)
-    }) //returns array of wages per record
-    let payroll = totalWages.reduce(function(total, currentRecord){
-        return total + currentRecord
-    })
+    // let totalWages = records.map(record => {
+    //     return allWagesFor(record)
+    // }) 
+    let payroll = records.reduce(function(total, currentRecord){
+        return total + allWagesFor(currentRecord)
+    }, 0) //DONT FORGET THE STARTING VALUE!!
     return payroll
 }
 
